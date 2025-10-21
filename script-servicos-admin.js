@@ -15,14 +15,21 @@ async function carregarServicos() {
     }
 
     container.innerHTML = "";
-    
+
     servicos.forEach((servico) => {
       const card = document.createElement("div");
       card.className = "servico-card";
 
       const imagensHTML = servico.imagens?.length
         ? servico.imagens
-            .map(img => `<img src="${img.url}" alt="${servico.nome}" width="50" height="50" style="margin-right:5px;">`)
+            .map(
+              (img, index) => `
+          <div class="imagem-item" data-index="${index}" style="display:inline-block; position:relative; margin-right:5px;">
+            <img src="${img.url}" alt="${servico.nome}" width="50" height="50" />
+            <button type="button" class="btn-remove-img" style="position:absolute; top:0; right:0; font-size:12px;">×</button>
+          </div>
+        `
+            )
             .join("")
         : "Sem imagens";
 
@@ -42,6 +49,15 @@ async function carregarServicos() {
       `;
 
       container.appendChild(card);
+
+      // Adiciona evento para remover imagens
+      const btnsRemove = card.querySelectorAll(".btn-remove-img");
+      btnsRemove.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const imagemItem = btn.closest(".imagem-item");
+          imagemItem.remove();
+        });
+      });
     });
   } catch (error) {
     console.error("Erro ao carregar serviços:", error);
@@ -101,11 +117,18 @@ async function atualizarServico(id, btn) {
     return alert("Preencha todos os campos corretamente.");
   }
 
-  let imagens = [];
+  // Pega URLs das imagens existentes que não foram removidas
+  const imagensExistentes = Array.from(card.querySelectorAll(".preview-imagens img"))
+    .map(img => img.src);
 
+  // Converte novas imagens selecionadas em base64
+  let imagensNovas = [];
   if (fileInput.files.length > 0) {
-    imagens = await converterArquivosParaBase64(fileInput.files);
+    imagensNovas = await converterArquivosParaBase64(fileInput.files);
   }
+
+  // Envia as imagens: tanto as URLs antigas quanto as novas base64
+  const imagens = [...imagensExistentes, ...imagensNovas];
 
   try {
     const res = await fetch(`${apiBase}/${id}`, {
@@ -126,8 +149,6 @@ async function atualizarServico(id, btn) {
     alert("Erro ao atualizar serviço.");
   }
 }
-
-
 
 // ================= Exclui um serviço =================
 async function excluirServico(id) {
@@ -178,4 +199,3 @@ function resetFormServico() {
 // ================= Eventos =================
 document.querySelector(".btn.orange").addEventListener("click", adicionarServico);
 document.addEventListener("DOMContentLoaded", carregarServicos);
-
