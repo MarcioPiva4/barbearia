@@ -237,3 +237,20 @@ async function carregarProdutos() {
 
   // carregarProdutos();
 });
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  new Swiper(".about-swiper", {
+    slidesPerView: 1,
+    spaceBetween: 20,
+    pagination: {
+      el: ".about-swiper .swiper-pagination",
+      clickable: true,
+    },
+    navigation: {
+      nextEl: ".about-swiper .swiper-button-next",
+      prevEl: ".about-swiper .swiper-button-prev",
+    },
+    loop: true
+  });
+});

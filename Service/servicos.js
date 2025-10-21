@@ -167,6 +167,8 @@ async function carregarServicos() {
         </div>
       `;
 
+      atualizarServicosFooter(servicos);
+      
       servicesGrid.appendChild(slide);
 
       // inicializa Swiper interno (imagens de cada serviço)
@@ -200,3 +202,20 @@ async function carregarServicos() {
   }
 }
 
+function atualizarServicosFooter(servicos) {
+  const footerList = document.getElementById("footer-service-list");
+  if (!footerList || !Array.isArray(servicos)) return;
+
+  const topServicos = servicos.slice(0, 3); // ou quantos quiser mostrar
+  footerList.innerHTML = topServicos.map(servico => `
+    <li class="service-list-item">
+      <span>${servico.nome}</span>
+      <span class="service-price">
+        ${Number(servico.preco).toLocaleString("pt-BR", {
+          style: "currency",
+          currency: "BRL"
+        })}
+      </span>
+    </li>
+  `).join("");
+}
