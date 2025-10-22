@@ -50,7 +50,6 @@ async function carregarProdutos() {
         tbody.appendChild(tr);
       });
 
-    // renderiza ícones após carregar
     lucide.createIcons();
   } catch (err) {
     tbody.innerHTML = `<tr><td colspan='6' style="color:red">Erro: ${err.message}</td></tr>`;
@@ -74,8 +73,28 @@ function editarProdutoInline(btn, id) {
   tr.querySelector(".estoque").innerHTML = `<input type="number" value="${estoque}" />`;
   tr.querySelector(".imagens").innerHTML = `
     <input type="file" multiple accept="image/*" />
-    <div class="preview-images">
-      ${imagens.map(url => `<img src="${url}" width="50" style="margin-right:5px;" />`).join("")}
+    <div class="preview-images" style="display:flex; gap:5px; flex-wrap: wrap;">
+      ${imagens.map((url, index) => `
+        <div class="image-wrapper" style="position: relative; display: inline-block;">
+          <img src="${url}" width="50" style="display: block; border-radius: 4px;" />
+          <button type="button" class="btn-remove-image" data-index="${index}" 
+            style="
+              position: absolute;
+              top: -6px;
+              right: -6px;
+              background: red;
+              color: white;
+              border: none;
+              border-radius: 50%;
+              width: 18px;
+              height: 18px;
+              font-weight: bold;
+              cursor: pointer;
+              line-height: 16px;
+              padding: 0;
+            ">×</button>
+        </div>
+      `).join('')}
     </div>
   `;
 
@@ -89,6 +108,15 @@ function editarProdutoInline(btn, id) {
   `;
 
   lucide.createIcons();
+
+  // Adiciona evento para remover imagens
+  const previewDiv = tr.querySelector(".preview-images");
+  previewDiv.querySelectorAll(".btn-remove-image").forEach(button => {
+    button.addEventListener("click", (e) => {
+      e.preventDefault();
+      button.parentElement.remove();
+    });
+  });
 }
 
 // ================== SALVAR EDIÇÃO INLINE ==================
@@ -114,7 +142,7 @@ async function salvarProdutoInline(btn, id) {
     imagensNovas.push(base64);
   }
 
-  // Mantém imagens antigas que já estavam no preview
+  // Mantém imagens antigas que ainda estão no preview
   const oldImages = Array.from(tr.querySelectorAll(".preview-images img")).map(img => img.src);
   const todasImagens = [...oldImages, ...imagensNovas];
 
