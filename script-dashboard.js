@@ -28,7 +28,17 @@
     const form = document.getElementById("schedule-form");
     form.addEventListener("submit", (e) => criarAgendamento(e, userId));
   });
+  
+  function mostrarMensagem(texto, erro = false) {
+    const msg = document.getElementById("mensagem");
+    msg.innerHTML = texto;
+    msg.className = erro ? "mensagem erro" : "mensagem";
+    msg.style.display = "block";
 
+    setTimeout(() => {
+      msg.style.display = "none";
+    }, 5000);
+  }
   async function carregarAgendamentos(userId) {
     try {
       const res = await fetch(API_URL);
@@ -38,11 +48,17 @@
       const tbody = document.querySelector("#appointments-table tbody");
       tbody.innerHTML = "";
 
+      let cancelados = [];
+
       agendamentos.forEach(ag => {
         const row = document.createElement("tr");
+
+        const servicos = ag.servicos?.map(s => s.servico?.nome || "Serviço").join(", ") || "—";
+        const dataFormatada = new Date(ag.dataAgendamento).toLocaleString("pt-BR");
+
         row.innerHTML = `
-          <td>${ag.servicos.map(s => s.servico.nome).join(", ")}</td>
-          <td>${new Date(ag.dataAgendamento).toLocaleString("pt-BR")}</td>
+          <td>${servicos}</td>
+          <td>${dataFormatada}</td>
           <td>${ag.status}</td>
           <td>
             <button class="action-btn edit-btn" onclick="remarcarAgendamento('${ag.id}')">Editar</button>
@@ -50,11 +66,27 @@
           </td>
         `;
         tbody.appendChild(row);
+
+        // Se estiver cancelado, guarda no array
+        if (ag.status?.toUpperCase() === "CANCELADO") {
+          cancelados.push({ servicos, data: dataFormatada });
+        }
       });
+
+      // Se houver cancelados, exibe mensagem
+      if (cancelados.length > 0) {
+        let mensagemTexto = "⚠️ Os seguintes agendamentos foram cancelados:<br>";
+        cancelados.forEach(c => {
+          mensagemTexto += `• ${c.servicos} — ${c.data}<br>`;
+        });
+        mostrarMensagem(mensagemTexto, true);
+      }
     } catch (err) {
       console.error("Erro ao carregar agendamentos:", err);
+      mostrarMensagem("Erro ao carregar agendamentos.", true);
     }
   }
+  
 
   async function carregarServicos() {
     try {
@@ -203,8 +235,22 @@ async function cancelarAgendamento(id) {
   if (!confirm("Tem certeza que deseja cancelar este agendamento?")) return;
 
   try {
+    // 🔹 Primeiro busca o agendamento antes de cancelar
+    const resAg = await fetch(`${API_URL}/${id}`);
+    const agendamento = await resAg.json();
+
+    const servicosNomes = agendamento.servicos
+      ? agendamento.servicos.map(s => s.servico?.nome || "Serviço").join(", ")
+      : "Serviços não encontrados";
+
+    const dataAgendamento = agendamento.dataAgendamento
+      ? new Date(agendamento.dataAgendamento).toLocaleString("pt-BR")
+      : "Data desconhecida";
+
+    // 🔹 Agora faz o cancelamento
     const res = await fetch(`${API_URL}/${id}`, {
       method: "PATCH",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status: "CANCELADO" }),
     });
 
@@ -215,7 +261,9 @@ async function cancelarAgendamento(id) {
       return;
     }
 
-    alert("Agendamento cancelado com sucesso!");
+    // 🔹 Mensagem personalizada
+    alert(`O agendamento de ${servicosNomes} (${dataAgendamento}) foi cancelado com sucesso!`);
+
     carregarAgendamentos(getCookie("userId"));
   } catch (err) {
     console.error("Erro ao cancelar agendamento:", err);

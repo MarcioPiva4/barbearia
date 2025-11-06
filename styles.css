@@ -129,6 +129,7 @@ main{
   align-items: center;
   gap: 8px;
   text-align: center;
+  height: 100%;
 }
 
 .btn-hero:hover {
@@ -541,6 +542,7 @@ main{
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center 25%;
   filter: grayscale(80%); /* Para dar um toque mais dramático e profissional */
 }
 
