@@ -52,6 +52,15 @@
     display: block;
     margin-bottom: 5px;
   }
+  #mensagem-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* espaço entre as mensagens */
+  }
   .mensagem {
   position: fixed;
   top: 20px;
@@ -67,6 +76,7 @@
 
 .mensagem.erro {
   background-color: #f44336; /* vermelho erro */
+  top: 100px;
 }
 
 @keyframes fadeOut {
@@ -79,7 +89,7 @@
 </head>
 
 <body>
-  <div id="mensagem" class="mensagem" style="display:none;"></div>
+  <div id="mensagem-container"></div>
   <div class="layout">
     <header class="header">
       <h1 class="page-title">Dashboard do Cliente</h1>
