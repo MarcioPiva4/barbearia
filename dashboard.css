@@ -282,3 +282,14 @@ table td {
 .checkbox-container input:checked+.custom-checkbox::after {
   display: block;
 }
+
+.btn-back{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.btn-back p{
+  color: #fff;
+}

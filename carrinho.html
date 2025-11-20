@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meu Carrinho</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ===== RESET & BODY ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #121212;
+      color: #fff;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .layout {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* ===== CART SECTION ===== */
+    .cart-section {
+      background: #1e1e1e;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      color: #fff;
+    }
+
+    .cart-section h2 {
+      color: #EEBD2B;
+      font-size: 1.6rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      margin-bottom: 1.5rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead th {
+      background: #333;
+      color: #EEBD2B;
+      font-weight: 600;
+      text-align: left;
+      padding: 12px;
+    }
+
+    tbody td {
+      padding: 12px;
+      border-top: 1px solid #444;
+      font-size: 0.95rem;
+    }
+
+    tbody tr:hover {
+      background: #2a2a2a;
+    }
+
+    /* ===== BUTTONS ===== */
+    .action-btn {
+      padding: 0.4rem 0.8rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: bold;
+      margin-right: 5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: 0.2s ease-in-out;
+    }
+
+    .delete-btn {
+      background: #dc2626;
+      color: #fff;
+    }
+
+    .delete-btn:hover {
+      background: #a71d2a;
+    }
+
+    .checkout-btn {
+      background: #EEBD2B;
+      color: #1e1e1e;
+      font-weight: 700;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-top: 10px;
+    }
+
+    .checkout-btn:hover {
+      background: #d4c18f;
+    }
+
+    .btn-back {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      margin-top: 1.5rem;
+    }
+
+    .btn-back p {
+      color: #fff;
+    }
+
+    /* ===== PIX BOX ===== */
+    .pix-box {
+      background: #1e1e1e;
+      padding: 1.8rem;
+      border-radius: 12px;
+      margin-top: 2rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      color: #fff;
+    }
+
+    .pix-box h3 {
+      color: #EEBD2B;
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+    }
+
+    .pix-desc {
+      color: #d1d1d1;
+      margin-bottom: 10px;
+    }
+
+    .pix-key-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #2a2a2a;
+      padding: 0.8rem 1rem;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    #pix-key {
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: #EEBD2B;
+    }
+
+    .copy-pix-btn {
+      background: #EEBD2B;
+      border: none;
+      padding: 0.5rem 0.9rem;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      color: #1e1e1e;
+      transition: 0.2s;
+    }
+
+    .copy-pix-btn:hover {
+      background: #c9a74a;
+    }
+
+    .pix-info {
+      font-size: 0.9rem;
+      color: #b8b8b8;
+      margin-top: 5px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 600px) {
+      .cart-section {
+        padding: 1rem;
+      }
+
+      table th, table td {
+        padding: 8px;
+      }
+
+      .checkout-btn {
+        width: 100%;
+      }
+
+      .pix-key-box {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+  </style>
+
+</head>
+<body>
+
+  <div class="layout">
+    <section class="section cart-section">
+      
+      <h2>Meu Carrinho</h2>
+
+      <div class="table-wrapper">
+        <table id="purchases-table">
+          <thead>
+            <tr>
+              <th>Produto</th>
+              <th>Quantidade</th>
+              <th>Preço Unitário</th>
+              <th>Data</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- preenchido via JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ========================== -->
+      <!--   BLOCO PAGAMENTO COM PIX -->
+      <!-- ========================== -->
+
+      <div class="pix-box">
+        <h3>Pagar com PIX</h3>
+        <p class="pix-desc">Use a chave PIX abaixo para realizar o pagamento:</p>
+
+        <div class="pix-key-box">
+          <span id="pix-key">xxxx</span>
+          <button class="copy-pix-btn" onclick="copiarPix()">Copiar</button>
+        </div>
+      </div>
+
+      <a href="/" title="voltar" class="btn-back"> 
+        <svg width="20" height="20" viewBox="-19.04 0 75.803 75.803" xmlns="http://www.w3.org/2000/svg">
+          <g transform="translate(-624.082 -383.588)">
+            <path d="M660.313,383.588a1.5,1.5,0,0,1,1.06,2.561l-33.556,33.56a2.528,2.528,0,0,0,0,3.564l33.556,33.558a1.5,1.5,0,0,1-2.121,2.121L625.7,425.394a5.527,5.527,0,0,1,0-7.807l33.556-33.559A1.5,1.5,0,0,1,660.313,383.588Z" fill="#fff"/>
+          </g>
+        </svg> 
+        <p>Voltar</p> 
+      </a>
+    </section>
+  </div>
+
+  <script>
+    function copiarPix() {
+      const pix = document.getElementById("pix-key").innerText;
+      navigator.clipboard.writeText(pix)
+        .then(() => alert("Chave PIX copiada!"))
+        .catch(() => alert("Não foi possível copiar o PIX"));
+    }
+  </script>
+
+  <script src="script-carrinho.js" defer></script>
+</body>
+</html>

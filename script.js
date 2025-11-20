@@ -148,7 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("Venda registrada:", data);
 
         // esconde formulário e mostra sucesso
-        productOrderForm.classList.add("hidden");
+        productOrderForm.style.display = "none";
         orderSuccess?.classList.remove("hidden");
 
         document.getElementById("btn-dashboard").onclick = () => {
