@@ -150,6 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // esconde formulário e mostra sucesso
         productOrderForm.style.display = "none";
         orderSuccess?.classList.remove("hidden");
+        document.querySelector('.success-message').style.display = "block"
 
         document.getElementById("btn-dashboard").onclick = () => {
           window.location.href = "dashboard.html";
